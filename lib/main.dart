@@ -33,6 +33,9 @@ class _MyAppState extends State<MyApp> {
                 CupertinoListTile(
                     title: Text('Airplane Mode'),
                      onTap: (){
+                       setState(() {
+                         airplaneMode = !airplaneMode;
+                       });
                      },
                      leading: Container(
                        padding: EdgeInsets.all(3),
@@ -51,9 +54,7 @@ class _MyAppState extends State<MyApp> {
                 CupertinoListTile(
                   title: Text('Wi-Fi'),
                   onTap: (){
-                    setState(() {
-                      airplaneMode = !airplaneMode;
-                    });
+
                   },
                   additionalInfo: Text('HCC_ICSLab'),
                   leading: Container(
