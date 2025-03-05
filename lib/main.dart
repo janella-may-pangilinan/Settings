@@ -16,13 +16,33 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  bool airplaneMode = false;
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(child: Padding(
+    return CupertinoPageScaffold(
+        navigationBar: CupertinoNavigationBar(
+          middle: Text('Settings'),
+        ),
+        child: Padding(
       padding: const EdgeInsets.all(10.0),
       child: SafeArea(child: Column(
         children: [
-
+          Expanded(
+            child: ListView(
+              children: [
+                CupertinoListTile(
+                    title: Text('Airplane Mode'),
+                     leading: Container(
+                       padding: EdgeInsets.all(3),
+                         decoration: BoxDecoration(
+                           borderRadius: BorderRadius.circular(5),
+                           color: CupertinoColors.systemOrange
+                         ),
+                         child: Icon(CupertinoIcons.airplane, color: CupertinoColors.white,)),
+                )
+              ],
+            ),
+          )
         ],
       )),
     ));
