@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'wifi_settings_page.dart';
-
+import 'bluetooth_settings_page.dart';
 
 void main() => runApp(CupertinoApp(
   debugShowCheckedModeBanner: false,
@@ -19,6 +18,13 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   bool airplaneMode = false;
   String selectedWiFi = "HCC_ICSLab"; // Default WiFi network
+  bool isBluetoothOn = false; // Track Bluetooth status
+
+  void updateBluetoothStatus(bool enabled) {
+    setState(() {
+      isBluetoothOn = enabled;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,14 +54,19 @@ class _MyAppState extends State<MyApp> {
     return Container(
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: Colors.black54,
+        color: CupertinoColors.systemGrey5,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(
         children: [
-          CircleAvatar(
-            radius: 35,
-            backgroundColor: CupertinoColors.systemGrey4,
+          Container(
+            width: 70,
+            height: 70,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: CupertinoColors.systemGrey4,
+            ),
+            alignment: Alignment.center,
             child: Text("JP", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: CupertinoColors.white)),
           ),
           const SizedBox(width: 12),
@@ -115,7 +126,7 @@ class _MyAppState extends State<MyApp> {
           title: Text('Wi-Fi'),
           additionalInfo: Text(selectedWiFi),
           leading: Icon(CupertinoIcons.wifi, color: CupertinoColors.white),
-          trailing: Icon(CupertinoIcons.chevron_right, color: Colors.grey),
+          trailing: Icon(CupertinoIcons.chevron_right, color: CupertinoColors.systemGrey),
           onTap: () {
             Navigator.push(
               context,
@@ -133,22 +144,31 @@ class _MyAppState extends State<MyApp> {
         ),
         CupertinoListTile(
           title: Text('Bluetooth'),
-          additionalInfo: Text('On'),
+          additionalInfo: Text(isBluetoothOn ? 'On' : 'Off'),
           leading: Icon(CupertinoIcons.bluetooth, color: CupertinoColors.white),
-          trailing: Icon(CupertinoIcons.chevron_right, color: Colors.grey),
-          onTap: () {},
+          trailing: Icon(CupertinoIcons.chevron_right, color: CupertinoColors.systemGrey),
+          onTap: () {
+            Navigator.push(
+              context,
+              CupertinoPageRoute(
+                builder: (context) => BluetoothSettingsPage(
+                  onBluetoothToggle: updateBluetoothStatus,
+                ),
+              ),
+            );
+          },
         ),
         CupertinoListTile(
           title: Text('Cellular'),
-          leading: Icon(Icons.cell_tower, color: CupertinoColors.white),
-          trailing: Icon(CupertinoIcons.chevron_right, color: Colors.grey),
+          leading: Icon(CupertinoIcons.phone, color: CupertinoColors.white),
+          trailing: Icon(CupertinoIcons.chevron_right, color: CupertinoColors.systemGrey),
           onTap: () {},
         ),
         CupertinoListTile(
           title: Text('Personal Hotspot'),
           additionalInfo: Text('On'),
-          leading: Icon(CupertinoIcons.personalhotspot, color: CupertinoColors.white),
-          trailing: Icon(CupertinoIcons.chevron_right, color: Colors.grey),
+          leading: Icon(CupertinoIcons.link, color: CupertinoColors.white),
+          trailing: Icon(CupertinoIcons.chevron_right, color: CupertinoColors.systemGrey),
           onTap: () {},
         ),
       ],
