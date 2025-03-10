@@ -1,9 +1,8 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'wifi_settings_page.dart';
 import 'bluetooth_settings_page.dart';
 
-void main() => runApp(CupertinoApp(
+void main() => runApp(const CupertinoApp(
   debugShowCheckedModeBanner: false,
   theme: CupertinoThemeData(brightness: Brightness.dark),
   home: MyApp(),
@@ -18,29 +17,79 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   bool airplaneMode = false;
-  String connectedWiFi = "vivo V29"; // Default connected Wi-Fi
-  String bluetoothStatus = "On"; // Default Bluetooth status
+  String connectedWiFi = "vivo V29"; // Default Wi-Fi
+  bool bluetoothEnabled = false;
+  bool cellularEnabled = false;
+  bool hotspotEnabled = false;
 
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(middle: Text('Settings')),
-      child: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: SafeArea(
-          child: Column(
-            children: [
-              Expanded(
-                child: ListView(
-                  children: [
-                    CupertinoListTile(
-                      title: Text('Airplane Mode'),
-                      onTap: () {
-                        setState(() {
-                          airplaneMode = !airplaneMode;
-                        });
-                      },
-                      leading: _iconTile(CupertinoIcons.airplane, CupertinoColors.systemOrange),
+      backgroundColor: CupertinoColors.black, // iPhone-style dark theme
+      child: CustomScrollView(
+        slivers: [
+          // 🔹 Navigation Bar (iPhone-style)
+          CupertinoSliverNavigationBar(
+            backgroundColor: CupertinoColors.black,
+            largeTitle: const Text("Settings", style: TextStyle(color: CupertinoColors.white)),
+            border: null,
+          ),
+
+          SliverToBoxAdapter(
+            child: Column(
+              children: [
+                // 🔹 Search Bar (Now at the Top)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                  child: CupertinoSearchTextField(
+                    placeholder: "Search",
+                    style: const TextStyle(color: CupertinoColors.white),
+                    backgroundColor: CupertinoColors.darkBackgroundGray,
+                  ),
+                ),
+
+                // 🔹 Profile Section (Apple ID)
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Container(
+                    padding: const EdgeInsets.all(15),
+                    decoration: BoxDecoration(
+                      color: CupertinoColors.darkBackgroundGray,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Row(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(30),
+                          child: Container(
+                            width: 60,
+                            height: 60,
+                            color: CupertinoColors.systemGrey, // Placeholder for Profile Pic
+                            child: const Icon(CupertinoIcons.person_alt, size: 40, color: CupertinoColors.white),
+                          ),
+                        ),
+                        const SizedBox(width: 15),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: const [
+                            Text("Nick Dela Cruz",
+                                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: CupertinoColors.white)),
+                            Text("Apple ID, iCloud, Media & Purchases",
+                                style: TextStyle(fontSize: 14, color: CupertinoColors.systemGrey)),
+                          ],
+                        ),
+                        const Spacer(),
+                        const Icon(CupertinoIcons.chevron_forward, color: CupertinoColors.systemGrey),
+                      ],
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 10),
+
+                // 🔹 Settings List (First Section)
+                _buildSettingsSection([
+                  _buildSettingItem("Airplane Mode", CupertinoIcons.airplane, CupertinoColors.systemOrange,
                       trailing: CupertinoSwitch(
                         value: airplaneMode,
                         onChanged: (value) {
@@ -48,12 +97,9 @@ class _MyAppState extends State<MyApp> {
                             airplaneMode = value;
                           });
                         },
-                      ),
-                    ),
-
-                    // Wi-Fi Section
-                    CupertinoListTile(
-                      title: Text('Wi-Fi'),
+                      )),
+                  _buildSettingItem("Wi-Fi", CupertinoIcons.wifi, CupertinoColors.systemBlue,
+                      subtitle: connectedWiFi,
                       onTap: () {
                         Navigator.push(
                           context,
@@ -67,65 +113,75 @@ class _MyAppState extends State<MyApp> {
                             ),
                           ),
                         );
-                      },
-                      additionalInfo: Text(connectedWiFi),
-                      leading: _iconTile(CupertinoIcons.wifi, CupertinoColors.systemBlue),
-                      trailing: Icon(CupertinoIcons.chevron_right, size: 20, color: Colors.grey),
-                    ),
-
-                    // Bluetooth Section
-                    CupertinoListTile(
-                      title: Text('Bluetooth'),
+                      }),
+                  _buildSettingItem("Bluetooth", CupertinoIcons.bluetooth, CupertinoColors.systemBlue,
+                      subtitle: bluetoothEnabled ? "On" : "Not Connected", // ✅ Fixed Bluetooth Status
                       onTap: () {
                         Navigator.push(
                           context,
                           CupertinoPageRoute(
                             builder: (context) => BluetoothSettingsPage(
-                              onBluetoothToggle: (status) {
+                              onBluetoothToggle: (enabled) {
                                 setState(() {
-                                  bluetoothStatus = status;
+                                  bluetoothEnabled = enabled;
                                 });
                               },
                             ),
                           ),
                         );
-                      },
-                      additionalInfo: Text(bluetoothStatus),
-                      leading: _iconTile(CupertinoIcons.bluetooth, CupertinoColors.systemBlue),
-                      trailing: Icon(CupertinoIcons.chevron_right, size: 20, color: Colors.grey),
-                    ),
-
-                    // Cellular Section
-                    CupertinoListTile(
-                      title: Text('Cellular'),
-                      onTap: () {},
-                      leading: _iconTile(Icons.cell_tower, CupertinoColors.systemGreen),
-                      trailing: Icon(CupertinoIcons.chevron_right, size: 20, color: Colors.grey),
-                    ),
-
-                    // Personal Hotspot Section
-                    CupertinoListTile(
-                      title: Text('Personal Hotspot'),
-                      onTap: () {},
-                      leading: _iconTile(CupertinoIcons.personalhotspot, CupertinoColors.systemGreen),
-                      additionalInfo: Text('On'),
-                      trailing: Icon(CupertinoIcons.chevron_right, size: 20, color: Colors.grey),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+                      }),
+                  _buildSettingItem("Cellular", CupertinoIcons.device_phone_portrait, CupertinoColors.systemGreen,
+                      subtitle: cellularEnabled ? "On" : "Off",
+                      onTap: () {
+                        setState(() {
+                          cellularEnabled = !cellularEnabled;
+                        });
+                      }),
+                  _buildSettingItem("Personal Hotspot", CupertinoIcons.link, CupertinoColors.systemGreen,
+                      subtitle: hotspotEnabled ? "On" : "Off",
+                      onTap: () {
+                        setState(() {
+                          hotspotEnabled = !hotspotEnabled;
+                        });
+                      }),
+                  _buildSettingItem("Battery", CupertinoIcons.battery_100, CupertinoColors.systemGreen),
+                ]),
+              ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
 
-  Widget _iconTile(IconData icon, Color color) {
+  // 🔹 Function to Build Settings Sections
+  Widget _buildSettingsSection(List<Widget> items) {
     return Container(
-      padding: EdgeInsets.all(3),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: color),
-      child: Icon(icon, color: CupertinoColors.white),
+      decoration: BoxDecoration(
+        color: CupertinoColors.darkBackgroundGray, // iPhone-style dark background
+        borderRadius: BorderRadius.circular(10),
+      ),
+      margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+      child: Column(children: items),
+    );
+  }
+
+  // 🔹 Function to Build Individual Setting Item
+  Widget _buildSettingItem(String title, IconData icon, Color color,
+      {String? subtitle, Widget? trailing, VoidCallback? onTap}) {
+    return CupertinoListTile(
+      title: Text(title, style: const TextStyle(color: CupertinoColors.white)),
+      subtitle: subtitle != null ? Text(subtitle, style: const TextStyle(color: CupertinoColors.systemGrey)) : null,
+      leading: Container(
+        padding: const EdgeInsets.all(5),
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(5),
+        ),
+        child: Icon(icon, color: CupertinoColors.white),
+      ),
+      trailing: trailing ?? const Icon(CupertinoIcons.chevron_forward, color: CupertinoColors.systemGrey),
+      onTap: onTap,
     );
   }
 }
