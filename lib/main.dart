@@ -17,8 +17,9 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   bool airplaneMode = false;
-  String selectedWiFi = "HCC_ICSLab"; // Default WiFi network
-  bool isBluetoothOn = false; // Track Bluetooth status
+  String selectedWiFi = "HCC_ICSLab";
+  bool isBluetoothOn = false;
+  TextEditingController searchController = TextEditingController();
 
   void updateBluetoothStatus(bool enabled) {
     setState(() {
@@ -30,14 +31,15 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
-        leading: Text('Settings',
-            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+        middle: Text('Settings', style: TextStyle(fontSize: 20)),
       ),
       child: Padding(
         padding: const EdgeInsets.all(10.0),
         child: SafeArea(
           child: Column(
             children: [
+              _buildSearchBar(),
+              SizedBox(height: 10),
               _buildProfileSection(),
               SizedBox(height: 10),
               _buildBackupWarning(),
@@ -47,6 +49,14 @@ class _MyAppState extends State<MyApp> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildSearchBar() {
+    return CupertinoSearchTextField(
+      controller: searchController,
+      placeholder: "Search",
+      onChanged: (value) {},
     );
   }
 
