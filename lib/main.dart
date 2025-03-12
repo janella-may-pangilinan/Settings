@@ -64,7 +64,7 @@ class _MyAppState extends State<MyApp> {
     return Container(
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: CupertinoColors.systemGrey5,
+        color: CupertinoColors.black,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(
@@ -74,7 +74,7 @@ class _MyAppState extends State<MyApp> {
             height: 70,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: CupertinoColors.systemGrey4,
+              color: CupertinoColors.systemGrey,
             ),
             alignment: Alignment.center,
             child: Text("JP", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: CupertinoColors.white)),
@@ -102,15 +102,17 @@ class _MyAppState extends State<MyApp> {
     return Container(
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: CupertinoColors.systemRed.withOpacity(0.1),
+        color: CupertinoColors.black.withOpacity(0.1),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(
         children: [
           Icon(CupertinoIcons.exclamationmark_triangle_fill, color: CupertinoColors.systemRed),
+
           SizedBox(width: 10),
           Expanded(
-            child: Text('Your iPhone can’t be backed up.', style: TextStyle(color: CupertinoColors.systemRed, fontSize: 16)),
+            child: Text('Your iPhone can’t be backed up.', style: TextStyle(color: CupertinoColors.white, fontSize: 16)),
+
           )
         ],
       ),
@@ -178,6 +180,12 @@ class _MyAppState extends State<MyApp> {
           title: Text('Personal Hotspot'),
           additionalInfo: Text('On'),
           leading: Icon(CupertinoIcons.link, color: CupertinoColors.white),
+          trailing: Icon(CupertinoIcons.chevron_right, color: CupertinoColors.systemGrey),
+          onTap: () {},
+        ),
+        CupertinoListTile(
+          title: Text('Battery'),
+          leading: Icon(CupertinoIcons.battery_full, color: CupertinoColors.white),
           trailing: Icon(CupertinoIcons.chevron_right, color: CupertinoColors.systemGrey),
           onTap: () {},
         ),
